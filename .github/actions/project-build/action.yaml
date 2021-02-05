@@ -27,7 +27,9 @@ runs:
     # Generate semver compatible version from current tag and commit hash
     - name: Create version
       id: get-version
-      run: echo ::set-output name=version::$(git describe --tags)+$(git rev-parse --short HEAD)
+      run:
+        GIT_TAG=$(git describe --tags)
+        echo ::set-output name=version::$([ -z $GIT_TAG ] && echo 0.0.0 || echo $GIT_TAG)+$(git rev-parse --short HEAD)
       shell: bash
 
     - name: Check Prerelease
