@@ -28,7 +28,7 @@ runs:
     - name: Create version
       id: get-version
       run:
-        GIT_TAG=$(git describe --tags)
+        GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
         echo ::set-output name=version::$GIT_TAG+$(git rev-parse --short HEAD)
       shell: bash
 
