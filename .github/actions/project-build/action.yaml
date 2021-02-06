@@ -63,18 +63,11 @@ runs:
     # Push to GitHub packages on each commit and release
     - name: Push to NuGet (Nightly)
       run:
-        echo false
-        echo true
-        echo true
-        echo true
-
         echo ${{ inputs.nuget_push }}
-        echo ${{ inputs.nuget_push && ('foo' == 'foo') }}
-        echo ${{ inputs.nuget_push && (666 == 666) }}
-        echo ${{ inputs.nuget_push && 666 == 666 }}
-        echo ${{ false && ('foo' == 'foo') }}
-        echo ${{ false && (666 == 666) }}
-        echo ${{ false && 666 == 666 }}
+        echo ${{ false == 'false' }}
+        echo ${{ 'true' == true }}
+        echo ${{ inputs.nuget_push && inputs.nuget_push == true }}
+        echo ${{ inputs.nuget_push && inputs.nuget_push == 'true' }}
 
         if ${{ inputs.nuget_push && (github.event_name == 'push' || (github.event_name == 'create' && github.event.ref_type == 'tag')) }}; then
              dotnet nuget push ${{ inputs.project_path }}/bin/Release/*.nupkg --api-key ${{ inputs.github_token }} --skip-duplicate --source https://nuget.pkg.github.com/openmod/index.json;
