@@ -29,7 +29,7 @@ runs:
       id: get-version
       run:
         GIT_TAG=$(git describe --tags)
-        echo ::set-output name=version::$([ -z $GIT_TAG ] && echo 0.0.0 || echo $GIT_TAG)+$(git rev-parse --short HEAD)
+        echo ::set-output name=version::$GIT_TAG+$(git rev-parse --short HEAD)
       shell: bash
 
     - name: Check Prerelease
