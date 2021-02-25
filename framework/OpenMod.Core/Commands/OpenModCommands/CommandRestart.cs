@@ -17,6 +17,7 @@ namespace OpenMod.Core.Commands.OpenModCommands
     {
         private readonly IOpenModHost m_Host;
         private readonly ILogger<CommandRestart> m_Logger;
+        private static Process? s_ChildProcess;
 
         public CommandRestart(
             IServiceProvider serviceProvider,
@@ -77,10 +78,21 @@ namespace OpenMod.Core.Commands.OpenModCommands
                 }
             }
 
-            Process.Start(startInfo);
+            // Not required on Windows
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+            }
+
+            s_ChildProcess = Process.Start(startInfo);
             Task.Run(m_Host.ShutdownAsync);
 
             return Task.CompletedTask;
+        }
+
+        private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            s_ChildProcess?.WaitForExit();
         }
     }
 }
